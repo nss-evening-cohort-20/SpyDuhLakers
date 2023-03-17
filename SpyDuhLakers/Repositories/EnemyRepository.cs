@@ -95,7 +95,40 @@ namespace SpyDuhLakers.Repositories
             }
         }
 
+        public void Update(Enemy enemy)
+        {
+            using (SqlConnection conn = Connection)
+            {
+                conn.Open();
+                using (SqlCommand cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = @"UPDATE Enemies SET 
+                                    userId = @userId,
+                                    enemyId = @enemyId
+                                WHERE Id = @id";
+                    cmd.Parameters.AddWithValue("@userId", enemy.userId);
+                    cmd.Parameters.AddWithValue("@enemyId", enemy.enemyId);
+                    cmd.Parameters.AddWithValue("@id", enemy.Id);
+                    cmd.ExecuteNonQuery();
+                }
+                conn.Close();
+            }
+        }
 
+        public void Delete(int id)
+        {
+            using (SqlConnection conn = Connection)
+            {
+                conn.Open();
+                using (SqlCommand cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = @"DELETE FROM Enemies WHERE Id = @id";
+                    cmd.Parameters.AddWithValue("@id", id);
+                    cmd.ExecuteNonQuery();
+                }
+                conn.Close();
+            }
+        }
 
 
 

@@ -70,6 +70,43 @@ namespace SpyDuhLakers.Repositories
         }
 
 
+        public void Update(Friend friend)
+        {
+            using (SqlConnection conn = Connection)
+            {
+                conn.Open();
+                using (SqlCommand cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = @"UPDATE Friends SET 
+                                    userId = @userId,
+                                    friendId = @friendId
+                                WHERE Id = @id";
+                    cmd.Parameters.AddWithValue("@userId", friend.userId);
+                    cmd.Parameters.AddWithValue("@enemyId", friend.friendId);
+                    cmd.Parameters.AddWithValue("@id", friend.Id);
+                    cmd.ExecuteNonQuery();
+                }
+                conn.Close();
+            }
+        }
+
+
+        public void Delete(int id)
+        {
+            using (SqlConnection conn = Connection)
+            {
+                conn.Open();
+                using (SqlCommand cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = @"DELETE FROM FRIENDS WHERE Id = @id";
+                    cmd.Parameters.AddWithValue("@id", id);
+                    cmd.ExecuteNonQuery();
+                }
+                conn.Close();
+            }
+        }
+
+
         public void Insert(Friend friend)
         {
             using (SqlConnection conn = Connection)
