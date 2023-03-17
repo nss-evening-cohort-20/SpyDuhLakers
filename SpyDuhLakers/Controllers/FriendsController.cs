@@ -1,42 +1,88 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using SpyDuhLakers.Models;
+using SpyDuhLakers.Repositories;
+using System.Collections.Generic;
 
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-
-namespace SpyDuhLakers.Controllers;
-
-[Route("[controller]")]
-[ApiController]
-public class FriendsController : ControllerBase
+namespace SpyDuhLakers.Controllers
 {
-    // GET: api/<FriendsController>
-    [HttpGet]
-    public IEnumerable<string> Get()
+    [Route("api/friends")]
+    [ApiController]
+    public class FriendController : ControllerBase
     {
-        return new string[] { "value1", "value2" };
-    }
+        private readonly FriendRepository _friendRepository;
 
-    // GET api/<FriendsController>/5
-    [HttpGet("{id}")]
-    public string Get(int id)
-    {
-        return "value";
-    }
+        public FriendController(string connectionString)
+        {
+            _friendRepository = new FriendRepository(connectionString);
+        }
 
-    // POST api/<FriendsController>
-    [HttpPost]
-    public void Post([FromBody] string value)
-    {
-    }
+        // GET api/friends
+        [HttpGet]
+        public ActionResult<IEnumerable<Friend>> Get()
+        {
+            return Ok(_friendRepository.GetAll());
+        }
 
-    // PUT api/<FriendsController>/5
-    [HttpPut("{id}")]
-    public void Put(int id, [FromBody] string value)
-    {
-    }
+        // GET api/friends/5
+        [HttpGet("{id}")]
+        public ActionResult<Friend> Get(int id)
+        {
+            Friend friend = _friendRepository.GetById(id);
+            if (friend == null)
+            {
+                return NotFound();
+            }
+            return Ok(friend);
+        }
 
-    // DELETE api/<FriendsController>/5
-    [HttpDelete("{id}")]
-    public void Delete(int id)
-    {
+        // POST api/friends
+        [HttpPost]
+        public IActionResult Post([FromBody] Friend friend)
+        {
+            if (friend == null)
+            {
+                return BadRequest();
+            }
+            _friendRepository.Insert(friend);
+            return Created("/api/friends/" + friend.Id, friend);
+        }
+
+        // PUT api/friends/5
+        [HttpPut("{id}")]
+        public IActionResult Put(int id, [FromBody] Friend friend)
+        {
+            if (friend == null || friend.Id != id)
+            {
+                return BadRequest();
+            }
+
+            Friend existingFriend = _friendRepository.GetById(id);
+            if (existingFriend == null)
+            {
+                return NotFound();
+            }
+
+            existingFriend.userId = friend.userId;
+            existingFriend.friendId = friend.friendId;
+
+            _friendRepository.Update(existingFriend);
+
+            return NoContent();
+        }
+
+        // DELETE api/friends/5
+        [HttpDelete("{id}")]
+        public IActionResult Delete(int id)
+        {
+            Friend friend = _friendRepository.GetById(id);
+            if (friend == null)
+            {
+                return NotFound();
+            }
+
+            _friendRepository.Delete(friend.Id);
+
+            return NoContent();
+        }
     }
 }

@@ -1,42 +1,67 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using SpyDuhLakers.Models;
+using SpyDuhLakers.Repositories;
+using System.Collections.Generic;
 
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-
-namespace SpyDuhLakers.Controllers;
-
-[Route("[controller]")]
-[ApiController]
-public class EnemiesController : ControllerBase
+namespace SpyDuhLakers.Controllers
 {
-    // GET: api/<EnemiesController>
-    [HttpGet]
-    public IEnumerable<string> Get()
+    [ApiController]
+    [Route("api/[controller]")]
+    public class EnemiesController : ControllerBase
     {
-        return new string[] { "value1", "value2" };
-    }
+        private readonly EnemyRepository _enemyRepository;
 
-    // GET api/<EnemiesController>/5
-    [HttpGet("{id}")]
-    public string Get(int id)
-    {
-        return "value";
-    }
+        public EnemiesController(EnemyRepository enemyRepository)
+        {
+            _enemyRepository = enemyRepository;
+        }
 
-    // POST api/<EnemiesController>
-    [HttpPost]
-    public void Post([FromBody] string value)
-    {
-    }
+        [HttpGet]
+        public ActionResult<IEnumerable<Enemy>> GetAllEnemies()
+        {
+            var enemies = _enemyRepository.GetAll();
+            return Ok(enemies);
+        }
 
-    // PUT api/<EnemiesController>/5
-    [HttpPut("{id}")]
-    public void Put(int id, [FromBody] string value)
-    {
-    }
+        [HttpGet("{id}")]
+        public ActionResult<Enemy> GetEnemyById(int id)
+        {
+            var enemy = _enemyRepository.GetById(id);
+            if (enemy == null)
+            {
+                return NotFound();
+            }
+            return Ok(enemy);
+        }
 
-    // DELETE api/<EnemiesController>/5
-    [HttpDelete("{id}")]
-    public void Delete(int id)
-    {
+        [HttpPost]
+        public ActionResult<Enemy> AddEnemy(Enemy enemy)
+        {
+            _enemyRepository.Insert(enemy);
+            return CreatedAtAction(nameof(GetEnemyById), new { id = enemy.Id }, enemy);
+        }
+
+        [HttpPut("{id}")]
+        public IActionResult UpdateEnemy(int id, Enemy enemy)
+        {
+            if (id != enemy.Id)
+            {
+                return BadRequest();
+            }
+            _enemyRepository.Update(enemy);
+            return NoContent();
+        }
+
+        [HttpDelete("{id}")]
+        public IActionResult DeleteEnemy(int id)
+        {
+            var enemy = _enemyRepository.GetById(id);
+            if (enemy == null)
+            {
+                return NotFound();
+            }
+            _enemyRepository.Delete(enemy.Id);
+            return NoContent();
+        }
     }
 }
