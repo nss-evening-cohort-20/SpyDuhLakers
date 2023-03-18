@@ -11,7 +11,7 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddTransient<IEnemyRepository, EnemyRepository>();
 builder.Services.AddTransient<IFriendRepository, FriendRepository>();
 //builder.Services.AddTransient<ISkillRepository, SkillRepository>();
-//builder.Services.AddTransient<IUserRepository, UserRepository>();
+builder.Services.AddTransient<IUserRepository, UserRepository>();
 //builder.Services.AddTransient<IServiceRepository, ServiceRepository>();
 
 var app = builder.Build();
