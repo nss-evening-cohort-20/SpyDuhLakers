@@ -1,8 +1,11 @@
-﻿namespace SpyDuhLakers.Models;
+﻿using System.ComponentModel.DataAnnotations;
 
+namespace SpyDuhLakers.Models;
 public class User
 {
     public int Id { get; set; }
+    
+    [Required]
     public string Name { get; set; }    
     public List<Enemy>? Enemies { get; set; } = null;
     public List<Friend>? Friends { get; set; } = null;
