@@ -5,27 +5,27 @@ using System.Collections.Generic;
 
 namespace SpyDuhLakers.Controllers
 {
-    [Route("api/friends")]
     [ApiController]
+    [Route("api/friends")]
     public class FriendController : ControllerBase
     {
-        private readonly FriendRepository _friendRepository;
+        private readonly IFriendRepository _friendRepository;
 
-        public FriendController(string connectionString)
+        public FriendController(IFriendRepository friendRepository)
         {
-            _friendRepository = new FriendRepository(connectionString);
+            _friendRepository = friendRepository;
         }
 
         // GET api/friends
         [HttpGet]
-        public ActionResult<IEnumerable<Friend>> Get()
+        public IActionResult Get()
         {
             return Ok(_friendRepository.GetAll());
         }
 
         // GET api/friends/5
         [HttpGet("{id}")]
-        public ActionResult<Friend> Get(int id)
+        public IActionResult Get(int id)
         {
             Friend friend = _friendRepository.GetById(id);
             if (friend == null)

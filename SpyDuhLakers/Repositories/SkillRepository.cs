@@ -3,9 +3,9 @@ using SpyDuhLakers.Models;
 
 namespace SpyDuhLakers.Repositories
 {
-    public class SkillRepository : BaseRepository
+    public class SkillRepository : BaseRepository, ISkillRepository
     {
-        public SkillRepository(string connectionString) : base(connectionString) { }
+        public SkillRepository(IConfiguration configuration) : base(configuration) { }
 
         public List<Skill> GetAll()
         {

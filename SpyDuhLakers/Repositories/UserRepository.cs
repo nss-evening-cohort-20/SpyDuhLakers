@@ -6,9 +6,9 @@ using System.Reflection.Metadata.Ecma335;
 namespace SpyDuhLakers.Repositories
 {
 
-    public class UserRepository : BaseRepository
+    public class UserRepository : BaseRepository, IUserRepository
     {
-        public UserRepository(string connectionString) : base(connectionString) { }
+        public UserRepository(IConfiguration configuration) : base(configuration) { }
 
         public List<User> GetAll()
         {
@@ -87,10 +87,10 @@ namespace SpyDuhLakers.Repositories
                                         OUTPUT INSERTED.Id
                                         VALUES (@name)";
                     cmd.Parameters.AddWithValue("@name", user.Name);
-                    int id =(int)cmd.ExecuteScalar();
+                    int id = (int)cmd.ExecuteScalar();
 
 
-                    
+
                 }
             }
         }

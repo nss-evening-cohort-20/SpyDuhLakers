@@ -4,9 +4,9 @@ using System.Diagnostics.Metrics;
 
 namespace SpyDuhLakers.Repositories
 {
-    public class FriendRepository : BaseRepository
+    public class FriendRepository : BaseRepository, IFriendRepository
     {
-        public FriendRepository(string connectionString) : base(connectionString) { }
+        public FriendRepository(IConfiguration configuration) : base(configuration) { }
         public List<Friend> GetAll()
         {
             using (SqlConnection conn = Connection)
