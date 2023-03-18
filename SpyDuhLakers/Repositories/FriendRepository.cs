@@ -1,5 +1,6 @@
 ﻿using Microsoft.Data.SqlClient;
 using SpyDuhLakers.Models;
+using SpyDuhLakers.Utils;
 using System.Diagnostics.Metrics;
 
 namespace SpyDuhLakers.Repositories
@@ -20,21 +21,13 @@ namespace SpyDuhLakers.Repositories
 
                     while (reader.Read())
                     {
-                        int idColumnPosition = reader.GetOrdinal("id");
-                        int idValue = reader.GetInt32(idColumnPosition);
-                        int userIdColumnPosition = reader.GetOrdinal("userId");
-                        int userIdValue = reader.GetInt32(userIdColumnPosition);
-                        int friendIdColumnPosition = reader.GetOrdinal("friendId");
-                        int friendIdValue = reader.GetInt32(friendIdColumnPosition);
-
-                        Friend friend = new Friend()
+                        friends.Add(new Friend()
                         {
-                            Id = idValue,
-                            userId = userIdValue,
-                            friendId = friendIdValue,
-                        };
-
-                        friends.Add(friend);
+                            Id = DbUtils.GetInt(reader, "id"),
+                            userId = DbUtils.GetInt(reader, "userId"),
+                            friendId = DbUtils.GetInt(reader, "friendId"),
+                        });
+                       
                     }
                     reader.Close();
                     return friends;

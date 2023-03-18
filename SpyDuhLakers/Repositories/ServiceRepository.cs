@@ -1,5 +1,6 @@
 ﻿using Microsoft.Data.SqlClient;
 using SpyDuhLakers.Models;
+using SpyDuhLakers.Utils;
 
 namespace SpyDuhLakers.Repositories
 {
@@ -24,18 +25,12 @@ namespace SpyDuhLakers.Repositories
 
                     while (reader.Read())
                     {
-                        int idColumnPosition = reader.GetOrdinal("id");
-
-                        int idValue = reader.GetInt32(idColumnPosition);
-                        int nameColumnPosition = reader.GetOrdinal("Name");
-                        string nameValue = reader.GetString(nameColumnPosition);
-
-                        Service service = new Service()
-                        {
-                            Id = idValue,
-                            Name = nameValue
-                        };
-                        services.Add(service);
+                        services.Add(new Service()
+                            {
+                            Id = DbUtils.GetInt(reader, "id"),
+                            Name = DbUtils.GetString(reader, "name"),
+                            userId = DbUtils.GetInt(reader, "userId"),
+                        });
                     }
                     reader.Close();
 
@@ -67,6 +62,7 @@ namespace SpyDuhLakers.Repositories
                         {
                             Id = Id,
                             Name = reader.GetString(reader.GetOrdinal("Name")),
+                            userId = reader.GetOrdinal("UserId"),
                         };
                     }
                     reader.Close();
@@ -93,6 +89,41 @@ namespace SpyDuhLakers.Repositories
                 }
                 conn.Close();
 
+            }
+        }
+
+        public void Update(Service service)
+        {
+            using (SqlConnection conn = Connection)
+            {
+                conn.Open();
+                using (SqlCommand cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = @"UPDATE Service SET 
+                                    userId = @userId,
+                                    name = @name
+                                WHERE Id = @id";
+                    cmd.Parameters.AddWithValue("@userId", service.userId);
+                    cmd.Parameters.AddWithValue("@name", service.Name);
+                    cmd.Parameters.AddWithValue("@id", service.Id);
+                    cmd.ExecuteNonQuery();
+                }
+                conn.Close();
+            }
+        }
+
+        public void Delete(int id)
+        {
+            using (SqlConnection conn = Connection)
+            {
+                conn.Open();
+                using (SqlCommand cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = @"DELETE FROM Service WHERE Id = @id";
+                    cmd.Parameters.AddWithValue("@id", id);
+                    cmd.ExecuteNonQuery();
+                }
+                conn.Close();
             }
         }
 
