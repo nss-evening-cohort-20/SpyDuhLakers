@@ -5,46 +5,9 @@ using System.Diagnostics.Metrics;
 
 namespace SpyDuhLakers.Repositories
 {
-
-
-
     public class EnemyRepository : BaseRepository, IEnemyRepository
     {
         public EnemyRepository(IConfiguration configuration) : base(configuration) { }
-        public List<Enemy> GetAll()
-        {
-            using (SqlConnection conn = Connection)
-            {
-                conn.Open();
-                using (SqlCommand cmd = conn.CreateCommand())
-                {
-                    cmd.CommandText = @"SELECT 
-	                                    u.name AS 'Spy', 
-	                                    enemy.name AS 'Enemy Name',
-                                        e.id,
-                                        e.userId,
-                                        e.enemyId
-	                                    FROM Users u
-	                                    LEFT JOIN Enemies e on u.id = e.userId
-	                                    LEFT JOIN Users enemy on enemy.id = e.enemyId";
-                    SqlDataReader reader = cmd.ExecuteReader();
-                    List<Enemy> enemies = new();
-
-                    while (reader.Read())
-                    {
-                        enemies.Add(new Enemy()
-                        {
-                            Id = DbUtils.GetInt(reader, "id"),
-                            userId = DbUtils.GetInt(reader, "userId"),
-                            enemyId = DbUtils.GetInt(reader, "enemyId")
-                        });
-                    }
-                    reader.Close();
-                    return enemies;
-                }
-            }
-        }
-
 
         public Enemy GetById(int Id)
         {
@@ -87,7 +50,7 @@ namespace SpyDuhLakers.Repositories
                     cmd.Parameters.AddWithValue("@enemyId", enemy.enemyId);
                     int id = (int)cmd.ExecuteScalar();
 
-                    enemy.Id= id;
+                    id = enemy.Id;
                 }
             }
         }

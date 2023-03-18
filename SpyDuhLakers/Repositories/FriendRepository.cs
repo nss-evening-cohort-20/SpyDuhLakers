@@ -7,41 +7,6 @@ namespace SpyDuhLakers.Repositories
     public class FriendRepository : BaseRepository, IFriendRepository
     {
         public FriendRepository(IConfiguration configuration) : base(configuration) { }
-        public List<Friend> GetAll()
-        {
-            using (SqlConnection conn = Connection)
-            {
-                conn.Open();
-                using (SqlCommand cmd = conn.CreateCommand())
-                {
-                    cmd.CommandText = @"SELECT id, userId, friendId FROM [Friends]";
-                    SqlDataReader reader = cmd.ExecuteReader();
-                    List<Friend> friends = new List<Friend>();
-
-                    while (reader.Read())
-                    {
-                        int idColumnPosition = reader.GetOrdinal("id");
-                        int idValue = reader.GetInt32(idColumnPosition);
-                        int userIdColumnPosition = reader.GetOrdinal("userId");
-                        int userIdValue = reader.GetInt32(userIdColumnPosition);
-                        int friendIdColumnPosition = reader.GetOrdinal("friendId");
-                        int friendIdValue = reader.GetInt32(friendIdColumnPosition);
-
-                        Friend friend = new Friend()
-                        {
-                            Id = idValue,
-                            userId = userIdValue,
-                            friendId = friendIdValue,
-                        };
-
-                        friends.Add(friend);
-                    }
-                    reader.Close();
-                    return friends;
-                }
-            }
-        }
-
 
         public Friend GetById(int Id)
         {
@@ -112,7 +77,7 @@ namespace SpyDuhLakers.Repositories
             using (SqlConnection conn = Connection)
             {
                 conn.Open();
-                using (SqlCommand cmd = Connection.CreateCommand())
+                using (SqlCommand cmd = conn.CreateCommand())
                 {
                     cmd.CommandText = @"INSERT INTO Friends (userId, friendId) 
                                 OUTPUT INSERTED.Id 
@@ -120,8 +85,9 @@ namespace SpyDuhLakers.Repositories
                     cmd.Parameters.AddWithValue("@userId", friend.userId);
                     cmd.Parameters.AddWithValue("@friendId", friend.friendId);
                     int id = (int)cmd.ExecuteScalar();
+
+                    id = friend.Id;
                 }
-                conn.Close();
             }
         }
     }
