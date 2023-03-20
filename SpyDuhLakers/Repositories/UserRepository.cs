@@ -22,7 +22,6 @@ namespace SpyDuhLakers.Repositories
                     SELECT
                         u.id AS SpyId,
                         u.name AS SpyName,
-<<<<<<< HEAD
                         f.id AS FriendTableId,
                         f.friendId AS FriendUserId,
                         friend.name AS FriendName,
@@ -128,84 +127,6 @@ namespace SpyDuhLakers.Repositories
                                     UserId = DbUtils.GetInt(reader, "ServiceUserId")
                                 });
                             }
-=======
-                        e.enemyId AS EnemyUserId,
-                        e.id AS EnemyTableId,
-                        enemy.name AS EnemyName,
-                        f.id AS FriendTableId,
-                        f.friendId AS FriendUserId,
-                        friend.name AS FriendName,
-                        s.id AS SkillTableId,
-                        s.name AS SkillName,
-                        sv.id AS ServiceTableId,
-                        sv.name AS ServiceName,
-                        sv.userId ServiceUserId
-                    FROM Users u
-                        LEFT JOIN Enemies e on u.id = e.userId
-                        LEFT JOIN Friends f on u.id = f.userId
-                        LEFT JOIN Skills s on u.id = s.userId
-                        LEFT JOIN Services sv on u.id = sv.userId
-                        LEFT JOIN Users enemy on enemy.id = e.enemyId
-                        LEFT JOIN Users friend on friend.id = f.friendId";
-                
-                    var reader = cmd.ExecuteReader();
-
-                    var users = new List<User>();
-
-                    User user = null;
-
-                    while (reader.Read())
-                    {
-                        user = new User()
-                        {
-                            Id = DbUtils.GetInt(reader, "SpyId"),
-                            Name = DbUtils.GetString(reader, "SpyName"),
-                            Enemies = new List<Enemy>(),
-                            Friends = new List<Friend>(),
-                            Skills = new List<Skill>(),
-                            Services = new List<Service>()
-                        };
-                        
-                        users.Add(user);
-
-                        if(DbUtils.IsNotDbNull(reader, "EnemyUserId"))
-                        {
-                            user.Enemies.Add(new Enemy()
-                            {
-                                Id = DbUtils.GetInt(reader, "EnemyTableId"),
-                                userId = DbUtils.GetInt(reader, "SpyId"),
-                                enemyId = DbUtils.GetInt(reader, "EnemyUserId")
-                            });
-                        }
-
-                        if(DbUtils.IsNotDbNull(reader, "FriendUserId"))
-                        {
-                            user.Friends.Add(new Friend()
-                            {
-                                Id = DbUtils.GetInt(reader, "FriendTableId"),
-                                userId = DbUtils.GetInt(reader, "SpyId"),
-                                friendId = DbUtils.GetInt(reader, "FriendUserId")
-                            });
-                        }
-
-                        if(DbUtils.IsNotDbNull(reader, "SkillTableId"))
-                        {
-                            user.Skills.Add(new Skill()
-                            {
-                                Id = DbUtils.GetInt(reader, "SkillTableId"),
-                                Name = DbUtils.GetString(reader, "SkillName")
-                            });
-                        }
-
-                        if(DbUtils.IsNotDbNull(reader, "ServiceTableId"))
-                        {
-                            user.Services.Add(new Service()
-                            {
-                                Id = DbUtils.GetInt(reader, "ServiceTableId"),
-                                Name = DbUtils.GetString(reader, "ServiceName"),
-                                UserId = DbUtils.GetInt(reader, "ServiceUserId")
-                            });
->>>>>>> main
                         }
                     }
 
