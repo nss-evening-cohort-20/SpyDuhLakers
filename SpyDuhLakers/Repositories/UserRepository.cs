@@ -22,82 +22,111 @@ namespace SpyDuhLakers.Repositories
                     SELECT
                         u.id AS SpyId,
                         u.name AS SpyName,
-                        e.enemyId AS EnemyUserId,
-                        e.id AS EnemyTableId,
-                        enemy.name AS EnemyName,
                         f.id AS FriendTableId,
                         f.friendId AS FriendUserId,
                         friend.name AS FriendName,
-                        s.id AS SkillTableId,
-                        s.name AS SkillName,
+                        e.enemyId AS EnemyUserId,
+                        e.id AS EnemyTableId,
+                        enemy.name AS EnemyName,
+                        sk.id AS SkillTableId,
+                        sk.name AS SkillName,
+                        sk.userId AS SkillUserId,
                         sv.id AS ServiceTableId,
                         sv.name AS ServiceName,
-                        sv.userId ServiceUserId
+                        sv.userId AS ServiceUserId
                     FROM Users u
-                        LEFT JOIN Enemies e on u.id = e.userId
                         LEFT JOIN Friends f on u.id = f.userId
-                        LEFT JOIN Skills s on u.id = s.userId
+                        LEFT JOIN Enemies e on u.id = e.userId
+                        LEFT JOIN Skills sk on u.id = sk.userId
                         LEFT JOIN Services sv on u.id = sv.userId
-                        LEFT JOIN Users enemy on enemy.id = e.enemyId
-                        LEFT JOIN Users friend on friend.id = f.friendId";
-                
+                        LEFT JOIN Users friend on friend.id = f.friendId
+                        LEFT JOIN Users enemy on enemy.id = e.enemyId";
+
                     var reader = cmd.ExecuteReader();
 
                     var users = new List<User>();
 
-                    User user = null;
-
                     while (reader.Read())
                     {
-                        user = new User()
-                        {
-                            Id = DbUtils.GetInt(reader, "SpyId"),
-                            Name = DbUtils.GetString(reader, "SpyName"),
-                            Enemies = new List<Enemy>(),
-                            Friends = new List<Friend>(),
-                            Skills = new List<Skill>(),
-                            Services = new List<Service>()
-                        };
-                        
-                        users.Add(user);
+                        var userId = DbUtils.GetInt(reader, "SpyId");
+                        var user = users.Where(u => u.Id == userId).FirstOrDefault();
 
-                        if(DbUtils.IsNotDbNull(reader, "EnemyUserId"))
+                        if (user == null)
                         {
-                            user.Enemies.Add(new Enemy()
+                            user = new User()
                             {
-                                Id = DbUtils.GetInt(reader, "EnemyTableId"),
-                                userId = DbUtils.GetInt(reader, "SpyId"),
-                                enemyId = DbUtils.GetInt(reader, "EnemyUserId")
-                            });
+                                Id = DbUtils.GetInt(reader, "SpyId"),
+                                Name = DbUtils.GetString(reader, "SpyName"),
+                                Enemies = new List<Enemy>(),
+                                Friends = new List<Friend>(),
+                                Skills = new List<Skill>(),
+                                Services = new List<Service>()
+                            };
+                            users.Add(user);
                         }
 
-                        if(DbUtils.IsNotDbNull(reader, "FriendUserId"))
+                        if (DbUtils.IsNotDbNull(reader, "EnemyTableId"))
                         {
-                            user.Friends.Add(new Friend()
+                            var enemyTableId = DbUtils.GetInt(reader, "EnemyTableId");
+                            var existingEnemy = user.Enemies.FirstOrDefault(e => e.Id == enemyTableId);
+
+                            if (existingEnemy == null)
                             {
-                                Id = DbUtils.GetInt(reader, "FriendTableId"),
-                                userId = DbUtils.GetInt(reader, "SpyId"),
-                                friendId = DbUtils.GetInt(reader, "FriendUserId")
-                            });
+                                user.Enemies.Add(new Enemy()
+                                {
+                                    Id = DbUtils.GetInt(reader, "EnemyTableId"),
+                                    userId = DbUtils.GetInt(reader, "SpyId"),
+                                    enemyId = DbUtils.GetInt(reader, "EnemyUserId")
+                                });
+                            } 
                         }
 
-                        if(DbUtils.IsNotDbNull(reader, "SkillTableId"))
+                        if (DbUtils.IsNotDbNull(reader, "FriendTableId"))
                         {
-                            user.Skills.Add(new Skill()
+                            var friendTableId = DbUtils.GetInt(reader, "FriendTableId");
+                            var existingFriend = user.Friends.FirstOrDefault(f => f.Id == friendTableId);
+                            
+                            if (existingFriend == null)
                             {
-                                Id = DbUtils.GetInt(reader, "SkillTableId"),
-                                Name = DbUtils.GetString(reader, "SkillName")
-                            });
+                                user.Friends.Add(new Friend()
+                                {
+                                    Id = friendTableId,
+                                    userId = DbUtils.GetInt(reader, "SpyId"),
+                                    friendId = DbUtils.GetInt(reader, "FriendUserId")
+                                });
+                            }
                         }
 
-                        if(DbUtils.IsNotDbNull(reader, "ServiceTableId"))
+                        if (DbUtils.IsNotDbNull(reader, "SkillTableId"))
                         {
-                            user.Services.Add(new Service()
+                            var skillTableId = DbUtils.GetInt(reader, "SkillTableId");
+                            var existingSkill = user.Skills.FirstOrDefault(s => s.Id == skillTableId);
+                            
+                            if (existingSkill == null)
                             {
-                                Id = DbUtils.GetInt(reader, "ServiceTableId"),
-                                Name = DbUtils.GetString(reader, "ServiceName"),
-                                UserId = DbUtils.GetInt(reader, "ServiceUserId")
-                            });
+                                user.Skills.Add(new Skill()
+                                {
+                                    Id = skillTableId,
+                                    Name = DbUtils.GetString(reader, "SkillName"),
+                                    UserId = DbUtils.GetInt(reader, "SkillUserId")
+                                });
+                            }
+                        }
+
+                        if (DbUtils.IsNotDbNull(reader, "ServiceTableId"))
+                        {
+                            var serviceTableId = DbUtils.GetInt(reader, "ServiceTableId");
+                            var existingService = user.Services.FirstOrDefault(sv => sv.Id == serviceTableId);
+
+                            if (existingService == null)
+                            {
+                                user.Services.Add(new Service()
+                                {
+                                    Id = serviceTableId,
+                                    Name = DbUtils.GetString(reader, "ServiceName"),
+                                    UserId = DbUtils.GetInt(reader, "ServiceUserId")
+                                });
+                            }
                         }
                     }
 
