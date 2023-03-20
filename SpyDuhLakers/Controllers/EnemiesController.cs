@@ -16,28 +16,11 @@ namespace SpyDuhLakers.Controllers
             _enemyRepository = enemyRepository;
         }
 
-        [HttpGet]
-        public IActionResult GetAllEnemies()
-        {
-            return Ok(_enemyRepository.GetAll());
-        }
-
-        [HttpGet("{id}")]
-        public IActionResult GetEnemyById(int id)
-        {
-            var enemy = _enemyRepository.GetById(id);
-            if (enemy == null)
-            {
-                return NotFound();
-            }
-            return Ok(enemy);
-        }
-
         [HttpPost]
-        public IActionResult AddEnemy(Enemy enemy)
+        public IActionResult Post(Enemy enemy)
         {
             _enemyRepository.Insert(enemy);
-            return CreatedAtAction("GetCreated", new { id = enemy.Id }, enemy);
+            return CreatedAtAction("Get", new { id = enemy.Id }, enemy);
         }
 
         [HttpPut("{id}")]
