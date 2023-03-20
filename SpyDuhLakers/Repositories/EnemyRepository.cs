@@ -1,54 +1,13 @@
 ﻿using Microsoft.Data.SqlClient;
 using SpyDuhLakers.Models;
+using SpyDuhLakers.Utils;
 using System.Diagnostics.Metrics;
 
 namespace SpyDuhLakers.Repositories
 {
-
-
-
-    public class EnemyRepository : BaseRepository
+    public class EnemyRepository : BaseRepository, IEnemyRepository
     {
-        public EnemyRepository(string connectionString) : base(connectionString) { }
-        public List<Enemy> GetAll()
-        {
-            using (SqlConnection conn = Connection)
-            {
-                conn.Open();
-                using (SqlCommand cmd = conn.CreateCommand())
-                {
-                    cmd.CommandText = @"Select 
-                                        id
-                                        ,userId
-                                        ,enemyId
-                                        From [Enemies]";
-                    SqlDataReader reader = cmd.ExecuteReader();
-                    List<Enemy> enemies = new List<Enemy>();
-
-                    while (reader.Read())
-                    {
-                        int idColumnPosition = reader.GetOrdinal("Id");
-                        int idValue = reader.GetInt32(idColumnPosition);
-                        int userIdColumnPosition = reader.GetOrdinal("userId");
-                        int useridValue = reader.GetInt32(userIdColumnPosition);
-                        int enemyIdColumnPosition = reader.GetOrdinal("enemyId");
-                        int enemyidValue = reader.GetInt32(enemyIdColumnPosition);
-
-                        Enemy Enemy = new Enemy()
-                        {
-                            Id = idValue,
-                            userId = useridValue,
-                            enemyId = enemyidValue,
-                        };
-
-                        enemies.Add(Enemy);
-                    }
-                    reader.Close();
-                    return enemies;
-                }
-            }
-        }
-
+        public EnemyRepository(IConfiguration configuration) : base(configuration) { }
 
         public Enemy GetById(int Id)
         {
@@ -82,16 +41,17 @@ namespace SpyDuhLakers.Repositories
             using (SqlConnection conn = Connection)
             {
                 conn.Open();
-                using (SqlCommand cmd = Connection.CreateCommand())
+                using (SqlCommand cmd = conn.CreateCommand())
                 {
                     cmd.CommandText = @"INSERT INTO Enemies (userId, enemyId) 
-                                OUTPUT INSERTED.Id 
+                                OUTPUT INSERTED.id 
                                 VALUES (@userId, @enemyId)";
                     cmd.Parameters.AddWithValue("@userId", enemy.userId);
                     cmd.Parameters.AddWithValue("@enemyId", enemy.enemyId);
                     int id = (int)cmd.ExecuteScalar();
+
+                    id = enemy.Id;
                 }
-                conn.Close();
             }
         }
 

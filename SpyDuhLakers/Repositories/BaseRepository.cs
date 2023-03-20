@@ -7,9 +7,9 @@ namespace SpyDuhLakers.Repositories
     {
         private string _connectionString;
 
-        public BaseRepository(string connectionString)
+        public BaseRepository(IConfiguration configuration)
         {
-            _connectionString = connectionString;
+            _connectionString = configuration.GetConnectionString("DefaultConnection");
         }
 
         protected SqlConnection Connection => new SqlConnection(_connectionString);

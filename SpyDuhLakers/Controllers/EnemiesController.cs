@@ -5,40 +5,22 @@ using System.Collections.Generic;
 
 namespace SpyDuhLakers.Controllers
 {
-    [ApiController]
     [Route("api/[controller]")]
+    [ApiController]
     public class EnemiesController : ControllerBase
     {
-        private readonly EnemyRepository _enemyRepository;
+        private readonly IEnemyRepository _enemyRepository;
 
-        public EnemiesController(EnemyRepository enemyRepository)
+        public EnemiesController(IEnemyRepository enemyRepository)
         {
             _enemyRepository = enemyRepository;
         }
 
-        [HttpGet]
-        public ActionResult<IEnumerable<Enemy>> GetAllEnemies()
-        {
-            var enemies = _enemyRepository.GetAll();
-            return Ok(enemies);
-        }
-
-        [HttpGet("{id}")]
-        public ActionResult<Enemy> GetEnemyById(int id)
-        {
-            var enemy = _enemyRepository.GetById(id);
-            if (enemy == null)
-            {
-                return NotFound();
-            }
-            return Ok(enemy);
-        }
-
         [HttpPost]
-        public ActionResult<Enemy> AddEnemy(Enemy enemy)
+        public IActionResult Post(Enemy enemy)
         {
             _enemyRepository.Insert(enemy);
-            return CreatedAtAction(nameof(GetEnemyById), new { id = enemy.Id }, enemy);
+            return CreatedAtAction("Get", new { id = enemy.Id }, enemy);
         }
 
         [HttpPut("{id}")]

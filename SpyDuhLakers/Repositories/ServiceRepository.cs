@@ -4,9 +4,9 @@ using SpyDuhLakers.Utils;
 
 namespace SpyDuhLakers.Repositories
 {
-    public class ServiceRepository : BaseRepository
+    public class ServiceRepository : BaseRepository, IServiceRepository
     {
-        public ServiceRepository(string connectionString) : base(connectionString) { }
+        public ServiceRepository(IConfiguration configuration) : base(configuration) { }
         public List<Service> GetAll()
         {
             using (SqlConnection conn = Connection)
@@ -73,7 +73,7 @@ namespace SpyDuhLakers.Repositories
         }
 
 
-        public void Insert (Service service)
+        public void Insert(Service service)
         {
             using (SqlConnection conn = Connection)
             {
