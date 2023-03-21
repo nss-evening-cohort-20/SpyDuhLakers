@@ -5,7 +5,7 @@ using SpyDuhLakers.Repositories;
 
 namespace SpyDuhLakers.Controllers;
 
-[Route("[controller]")]
+[Route("api[controller]")]
 [ApiController]
 public class SkillsController : ControllerBase
 {
@@ -37,7 +37,7 @@ public class SkillsController : ControllerBase
     public IActionResult AddSkill(Skill skill)
     {
         _skillRepository.Insert(skill);
-        return CreatedAtAction("Get", new { id = skill.Id }, skill);
+        return CreatedAtAction("/api/skills/" + skill.Id, skill);
     }
 
     [HttpPut("{id}")]
