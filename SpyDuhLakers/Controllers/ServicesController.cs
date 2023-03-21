@@ -62,7 +62,7 @@ namespace SpyDuhLakers.Controllers
                 return NotFound();
             }
 
-            existingService.userId = service.userId;
+            existingService.UserId = service.UserId;
             existingService.Name = service.Name;
 
             _serviceRepository.Update(existingService);
