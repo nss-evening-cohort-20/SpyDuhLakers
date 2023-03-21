@@ -80,10 +80,11 @@ namespace SpyDuhLakers.Repositories
                 conn.Open();
                 using (SqlCommand cmd = conn.CreateCommand())
                 {
-                    cmd.CommandText = @"Insert INTO Services(Name) 
+                    cmd.CommandText = @"Insert INTO Services([Name], userId)
                                         OUTPUT INSERTED.Id 
-                                        VALUES (@name)";
+                                        VALUES (@name, @userId)";
                     cmd.Parameters.AddWithValue("@name", service.Name);
+                    cmd.Parameters.AddWithValue("@userId", service.UserId);
                     int id = (int)cmd.ExecuteScalar();
 
                 }
