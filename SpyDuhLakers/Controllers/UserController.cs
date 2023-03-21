@@ -21,4 +21,16 @@ public class UserController : ControllerBase
     {
         return Ok(_userRepository.GetAllUsers());
     }
+
+    [HttpGet("{skill}")]
+    public IActionResult GetSkill(string skill) 
+    {
+        List<User> listOfSkills = _userRepository.GetUserBySkill(skill);
+
+        if (listOfSkills == null)
+        {
+            return NotFound();
+        }
+        return Ok(listOfSkills);
+    }
 }
