@@ -29,7 +29,7 @@ namespace SpyDuhLakers.Repositories
                             {
                             Id = DbUtils.GetInt(reader, "id"),
                             Name = DbUtils.GetString(reader, "name"),
-                            userId = DbUtils.GetInt(reader, "userId"),
+                            UserId = DbUtils.GetInt(reader, "userId"),
                         });
                     }
                     reader.Close();
@@ -62,7 +62,7 @@ namespace SpyDuhLakers.Repositories
                         {
                             Id = Id,
                             Name = reader.GetString(reader.GetOrdinal("Name")),
-                            userId = reader.GetOrdinal("UserId"),
+                            UserId = reader.GetOrdinal("UserId"),
                         };
                     }
                     reader.Close();
@@ -103,7 +103,7 @@ namespace SpyDuhLakers.Repositories
                                     userId = @userId,
                                     name = @name
                                 WHERE Id = @id";
-                    cmd.Parameters.AddWithValue("@userId", service.userId);
+                    cmd.Parameters.AddWithValue("@userId", service.UserId);
                     cmd.Parameters.AddWithValue("@name", service.Name);
                     cmd.Parameters.AddWithValue("@id", service.Id);
                     cmd.ExecuteNonQuery();
