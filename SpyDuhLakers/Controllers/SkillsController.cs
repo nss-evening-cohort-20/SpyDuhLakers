@@ -37,7 +37,7 @@ public class SkillsController : ControllerBase
     public IActionResult AddSkill(Skill skill)
     {
         _skillRepository.Insert(skill);
-        return CreatedAtAction("GetCreated", new { id = skill.Id }, skill);
+        return CreatedAtAction("Get", new { id = skill.Id }, skill);
     }
 
     [HttpPut("{id}")]
