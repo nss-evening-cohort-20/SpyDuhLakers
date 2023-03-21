@@ -195,16 +195,16 @@ namespace SpyDuhLakers.Repositories
                     cmd.Parameters.AddWithValue("@name", skill);
                     List<User> matchedList = new List<User>();
                     SqlDataReader reader = cmd.ExecuteReader();
-                    User matchedSkill = null;
+                    User matchedUser = null;
 
                     while (reader.Read())
                     {
-                        matchedSkill = new User()
+                        matchedUser = new User()
                         {
                             Id = DbUtils.GetInt(reader, "id"),
                             Name = DbUtils.GetString(reader, "name")
                         };
-                        matchedList.Add(matchedSkill);
+                        matchedList.Add(matchedUser);
                     }
 
                     reader.Close();
