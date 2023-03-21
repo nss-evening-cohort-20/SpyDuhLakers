@@ -10,7 +10,6 @@ namespace SpyDuhLakers.Controllers;
 public class UserController : ControllerBase
 {
     private readonly IUserRepository _userRepository;
-    private readonly ISkillRepository _skillRepository;
 
     public UserController(IUserRepository userRepository)
     {
