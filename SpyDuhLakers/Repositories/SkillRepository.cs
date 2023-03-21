@@ -103,7 +103,7 @@ namespace SpyDuhLakers.Repositories
                 using (SqlCommand cmd = conn.CreateCommand())
                 {
                     cmd.CommandText = @"UPDATE Skills SET 
-                                    userId = @userId,
+                                    userId = @userId
                                 WHERE Id = @id";
                     cmd.Parameters.AddWithValue("@userId", skill.UserId);
                     ;
