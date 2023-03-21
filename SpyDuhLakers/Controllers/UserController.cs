@@ -23,10 +23,10 @@ public class UserController : ControllerBase
         return Ok(_userRepository.GetAllUsers());
     }
 
-    [HttpGet("name")]
-    public IActionResult GetSkill(string name) 
+    [HttpGet("{skill}")]
+    public IActionResult GetSkill(string skill) 
     {
-        List<Skill> listOfSkills = _userRepository.GetUserBySkill(name);
+        List<User> listOfSkills = _userRepository.GetUserBySkill(skill);
 
         if (listOfSkills == null)
         {
