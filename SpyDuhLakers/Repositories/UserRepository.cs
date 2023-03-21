@@ -181,5 +181,37 @@ namespace SpyDuhLakers.Repositories
                 }
             }
         }
+
+        public List<Skill> GetUserBySkill(string name)
+        {
+            using (SqlConnection conn = Connection)
+            {
+                conn.Open();
+                using (SqlCommand cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = @"SELECT * FROM Users u
+                                            Join Skills sk on u.id = sk.userId
+                                            WHERE sk.name  = @name";
+                    cmd.Parameters.AddWithValue("@name", name);
+                    List<Skill> matchedList = new List<Skill>();
+                    SqlDataReader reader = cmd.ExecuteReader();
+                    Skill matchedSkill = null;
+
+                    while (reader.Read())
+                    {
+                        matchedSkill = new Skill()
+                        {
+                            Id = DbUtils.GetInt(reader, "id"),
+                            UserId = DbUtils.GetInt(reader, "userId"),
+                            Name = DbUtils.GetString(reader, "name"),
+                        };
+                        matchedList.Add(matchedSkill);
+                    }
+
+                    reader.Close();
+                    return matchedList;
+                }
+            }
+        }
     }
 }

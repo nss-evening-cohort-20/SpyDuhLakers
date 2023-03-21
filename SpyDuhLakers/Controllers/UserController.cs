@@ -10,6 +10,7 @@ namespace SpyDuhLakers.Controllers;
 public class UserController : ControllerBase
 {
     private readonly IUserRepository _userRepository;
+    private readonly ISkillRepository _skillRepository;
 
     public UserController(IUserRepository userRepository)
     {
@@ -20,5 +21,17 @@ public class UserController : ControllerBase
     public IActionResult GetAllUsers()
     {
         return Ok(_userRepository.GetAllUsers());
+    }
+
+    [HttpGet("name")]
+    public IActionResult GetSkill(string name) 
+    {
+        List<Skill> listOfSkills = _userRepository.GetUserBySkill(name);
+
+        if (listOfSkills == null)
+        {
+            return NotFound();
+        }
+        return Ok(listOfSkills);
     }
 }

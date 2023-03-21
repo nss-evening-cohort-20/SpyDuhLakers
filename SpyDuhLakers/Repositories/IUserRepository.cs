@@ -7,5 +7,6 @@ namespace SpyDuhLakers.Repositories
         List<User> GetAllUsers();
         User GetbyId(int Id);
         void Insert(User user);
+        List<Skill> GetUserBySkill(string name);
     }
 }
