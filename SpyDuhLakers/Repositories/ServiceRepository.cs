@@ -99,7 +99,7 @@ namespace SpyDuhLakers.Repositories
                 conn.Open();
                 using (SqlCommand cmd = conn.CreateCommand())
                 {
-                    cmd.CommandText = @"UPDATE Service SET 
+                    cmd.CommandText = @"UPDATE Services SET 
                                     userId = @userId,
                                     name = @name
                                 WHERE Id = @id";
@@ -119,7 +119,7 @@ namespace SpyDuhLakers.Repositories
                 conn.Open();
                 using (SqlCommand cmd = conn.CreateCommand())
                 {
-                    cmd.CommandText = @"DELETE FROM Service WHERE Id = @id";
+                    cmd.CommandText = @"DELETE FROM Services WHERE Id = @id";
                     cmd.Parameters.AddWithValue("@id", id);
                     cmd.ExecuteNonQuery();
                 }
