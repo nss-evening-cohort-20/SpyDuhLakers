@@ -44,7 +44,7 @@ namespace SpyDuhLakers.Repositories
                 using (SqlCommand cmd = conn.CreateCommand())
                 {
                     cmd.CommandText = @"INSERT INTO Enemies (userId, enemyId) 
-                                OUTPUT INSERTED.id 
+                                OUTPUT INSERTED.Id 
                                 VALUES (@userId, @enemyId)";
                     cmd.Parameters.AddWithValue("@userId", enemy.userId);
                     cmd.Parameters.AddWithValue("@enemyId", enemy.enemyId);
