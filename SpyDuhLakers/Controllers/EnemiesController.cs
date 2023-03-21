@@ -20,7 +20,7 @@ namespace SpyDuhLakers.Controllers
         public IActionResult Post(Enemy enemy)
         {
             _enemyRepository.Insert(enemy);
-            return CreatedAtAction("Get", new { id = enemy.Id }, enemy);
+            return Created("/api/Enemies/" + enemy.Id , enemy);
         }
 
         [HttpPut("{id}")]

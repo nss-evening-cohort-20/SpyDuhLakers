@@ -1,5 +1,6 @@
 ﻿using Microsoft.Data.SqlClient;
 using SpyDuhLakers.Models;
+using SpyDuhLakers.Utils;
 using System.Diagnostics.Metrics;
 
 namespace SpyDuhLakers.Repositories
