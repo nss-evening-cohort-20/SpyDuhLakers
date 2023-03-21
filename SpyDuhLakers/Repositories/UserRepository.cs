@@ -11,6 +11,11 @@ namespace SpyDuhLakers.Repositories
     {
         public UserRepository(IConfiguration configuration) : base(configuration) { }
 
+        public List<User> GetAll()
+        {
+            throw new NotImplementedException();
+        }
+
         public List<User> GetAllUsers()
         {
             using (var conn = Connection)
