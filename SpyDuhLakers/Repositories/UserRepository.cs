@@ -135,26 +135,121 @@ namespace SpyDuhLakers.Repositories
             }
         }
 
-        public User GetbyId(int Id)
+        public User GetUserbyId(int Id)
         {
-            using (SqlConnection conn = Connection)
+            using (var conn = Connection)
             {
                 conn.Open();
-                using (SqlCommand cmd = conn.CreateCommand())
+                using (var cmd = conn.CreateCommand())
                 {
-                    cmd.CommandText = "SELECT Name From User WHERE Id = @id";
-                    cmd.Parameters.AddWithValue("@id", Id);
-                    SqlDataReader reader = cmd.ExecuteReader();
+                    cmd.CommandText = @"
+                        SELECT
+                        u.id AS SpyId,
+                        u.name AS SpyName,
+                        f.id AS FriendTableId,
+                        f.friendId AS FriendUserId,
+                        e.enemyId AS EnemyUserId,
+                        e.id AS EnemyTableId,
+                        sk.id AS SkillTableId,
+                        sk.name AS SkillName,
+                        sk.userId AS SkillUserId,
+                        sv.id AS ServiceTableId,
+                        sv.name AS ServiceName,
+                        sv.userId AS ServiceUserId
+                    FROM Users u
+                        LEFT JOIN Friends f on u.id = f.userId
+                        LEFT JOIN Enemies e on u.id = e.userId
+                        LEFT JOIN Skills sk on u.id = sk.userId
+                        LEFT JOIN Services sv on u.id = sv.userId
+                        LEFT JOIN Users friend on friend.id = f.friendId
+                        LEFT JOIN Users enemy on enemy.id = e.enemyId
+                    WHERE u.id = @Id";
+
+                    DbUtils.AddParameter(cmd, "@Id", Id);
+
+                    var reader = cmd.ExecuteReader();
+
                     User user = null;
+
                     if (reader.Read())
                     {
                         user = new User()
                         {
-                            Id = Id,
-                            Name = reader.GetString(reader.GetOrdinal("Name")),
+                            Id = DbUtils.GetInt(reader, "SpyId"),
+                            Name = DbUtils.GetString(reader, "SpyName"),
+                            Enemies = new List<Enemy>(),
+                            Friends = new List<Friend>(),
+                            Skills = new List<Skill>(),
+                            Services = new List<Service>()
                         };
+
+                        if (DbUtils.IsNotDbNull(reader, "EnemyTableId"))
+                        {
+                            var enemyTableId = DbUtils.GetInt(reader, "EnemyTableId");
+                            var existingEnemy = user.Enemies.FirstOrDefault(e => e.Id == enemyTableId);
+
+                            if (existingEnemy == null)
+                            {
+                                user.Enemies.Add(new Enemy()
+                                {
+                                    Id = DbUtils.GetInt(reader, "EnemyTableId"),
+                                    userId = DbUtils.GetInt(reader, "SpyId"),
+                                    enemyId = DbUtils.GetInt(reader, "EnemyUserId")
+                                });
+                            } 
+                        }
+
+                        if (DbUtils.IsNotDbNull(reader, "FriendTableId"))
+                        {
+                            var friendTableId = DbUtils.GetInt(reader, "FriendTableId");
+                            var existingFriend = user.Friends.FirstOrDefault(f => f.Id == friendTableId);
+                            
+                            if (existingFriend == null)
+                            {
+                                user.Friends.Add(new Friend()
+                                {
+                                    Id = friendTableId,
+                                    userId = DbUtils.GetInt(reader, "SpyId"),
+                                    friendId = DbUtils.GetInt(reader, "FriendUserId")
+                                });
+                            }
+                        }
+
+                        if (DbUtils.IsNotDbNull(reader, "SkillTableId"))
+                        {
+                            var skillTableId = DbUtils.GetInt(reader, "SkillTableId");
+                            var existingSkill = user.Skills.FirstOrDefault(s => s.Id == skillTableId);
+                            
+                            if (existingSkill == null)
+                            {
+                                user.Skills.Add(new Skill()
+                                {
+                                    Id = skillTableId,
+                                    Name = DbUtils.GetString(reader, "SkillName"),
+                                    UserId = DbUtils.GetInt(reader, "SkillUserId")
+                                });
+                            }
+                        }
+
+                        if (DbUtils.IsNotDbNull(reader, "ServiceTableId"))
+                        {
+                            var serviceTableId = DbUtils.GetInt(reader, "ServiceTableId");
+                            var existingService = user.Services.FirstOrDefault(sv => sv.Id == serviceTableId);
+
+                            if (existingService == null)
+                            {
+                                user.Services.Add(new Service()
+                                {
+                                    Id = serviceTableId,
+                                    Name = DbUtils.GetString(reader, "ServiceName"),
+                                    UserId = DbUtils.GetInt(reader, "ServiceUserId")
+                                });
+                            }
+                        }
                     }
+
                     reader.Close();
+
                     return user;
                 }
             }
@@ -168,14 +263,11 @@ namespace SpyDuhLakers.Repositories
                 conn.Open();
                 using (SqlCommand cmd = conn.CreateCommand())
                 {
-                    cmd.CommandText = @"INSERT INTO User (Name}
+                    cmd.CommandText = @"INSERT INTO Users ([Name])
                                         OUTPUT INSERTED.Id
                                         VALUES (@name)";
                     cmd.Parameters.AddWithValue("@name", user.Name);
-                    int id = (int)cmd.ExecuteScalar();
-
-
-
+                    user.Id = (int)cmd.ExecuteScalar();
                 }
             }
         }

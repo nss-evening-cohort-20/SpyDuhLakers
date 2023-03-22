@@ -5,7 +5,7 @@ namespace SpyDuhLakers.Repositories
     public interface IUserRepository
     {
         List<User> GetAllUsers();
-        User GetbyId(int Id);
+        User GetUserbyId(int Id);
         void Insert(User user);
         List<User> GetUserBySkill(string name);
     }
