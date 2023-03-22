@@ -38,7 +38,7 @@ namespace SpyDuhLakers.Repositories
                         LEFT JOIN Friends f on u.id = f.userId
                         LEFT JOIN Enemies e on u.id = e.userId
                         LEFT JOIN Skills sk on u.id = sk.userId
-                        LEFT JOIN Services sv on u.id = sv.userId
+                        LEFT JOIN [Services] sv on u.id = sv.userId
                         LEFT JOIN Users friend on friend.id = f.friendId
                         LEFT JOIN Users enemy on enemy.id = e.enemyId";
 
