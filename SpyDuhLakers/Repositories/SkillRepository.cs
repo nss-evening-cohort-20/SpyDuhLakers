@@ -79,13 +79,16 @@ namespace SpyDuhLakers.Repositories
                 conn.Open();
                 using (SqlCommand cmd = conn.CreateCommand())
                 {
-                    cmd.CommandText = @"INSERT INTO Skills (Name) 
-                                OUTPUT INSERTED.Id 
-                                VALUES (@name)";
+                    cmd.CommandText = @"INSERT INTO Skills
+                                            ([Name], userId)
+                                        OUTPUT
+                                        INSERTED.Id
+                                        VALUES
+                                            (@name, @userId)";
                     cmd.Parameters.AddWithValue("@name", skill.Name);
+                    cmd.Parameters.AddWithValue("userId", skill.UserId);
 
                     int id = (int)cmd.ExecuteScalar();
-
                     
                 }
                 conn.Close();
@@ -103,7 +106,7 @@ namespace SpyDuhLakers.Repositories
                 using (SqlCommand cmd = conn.CreateCommand())
                 {
                     cmd.CommandText = @"UPDATE Skills SET 
-                                    userId = @userId,
+                                    userId = @userId
                                 WHERE Id = @id";
                     cmd.Parameters.AddWithValue("@userId", skill.UserId);
                     ;

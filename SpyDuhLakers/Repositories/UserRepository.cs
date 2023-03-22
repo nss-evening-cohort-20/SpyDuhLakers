@@ -24,10 +24,8 @@ namespace SpyDuhLakers.Repositories
                         u.name AS SpyName,
                         f.id AS FriendTableId,
                         f.friendId AS FriendUserId,
-                        friend.name AS FriendName,
                         e.enemyId AS EnemyUserId,
                         e.id AS EnemyTableId,
-                        enemy.name AS EnemyName,
                         sk.id AS SkillTableId,
                         sk.name AS SkillName,
                         sk.userId AS SkillUserId,
@@ -178,6 +176,37 @@ namespace SpyDuhLakers.Repositories
 
 
 
+                }
+            }
+        }
+
+        public List<User> GetUserBySkill(string skill)
+        {
+            using (SqlConnection conn = Connection)
+            {
+                conn.Open();
+                using (SqlCommand cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = @"SELECT * FROM Users u
+                                            Join Skills sk on u.id = sk.userId
+                                            WHERE sk.name  = @name";
+                    cmd.Parameters.AddWithValue("@name", skill);
+                    List<User> matchedList = new List<User>();
+                    SqlDataReader reader = cmd.ExecuteReader();
+                    User matchedUser = null;
+
+                    while (reader.Read())
+                    {
+                        matchedUser = new User()
+                        {
+                            Id = DbUtils.GetInt(reader, "id"),
+                            Name = DbUtils.GetString(reader, "name")
+                        };
+                        matchedList.Add(matchedUser);
+                    }
+
+                    reader.Close();
+                    return matchedList;
                 }
             }
         }
