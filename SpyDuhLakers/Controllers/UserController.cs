@@ -22,7 +22,7 @@ public class UserController : ControllerBase
         return Ok(_userRepository.GetAllUsers());
     }
 
-    [HttpGet("{skill}")]
+    [HttpGet("skill/{skill}")]
     public IActionResult GetSkill(string skill) 
     {
         List<User> listOfSkills = _userRepository.GetUserBySkill(skill);
@@ -32,5 +32,25 @@ public class UserController : ControllerBase
             return NotFound();
         }
         return Ok(listOfSkills);
+    }
+
+    [HttpGet("{id}")]
+    
+    public IActionResult GetUserById(int id)
+    {
+        var user = _userRepository.GetUserbyId(id);
+        if (user == null)
+        {
+            return NotFound();
+        }
+        return Ok(user);
+    }
+
+    [HttpPost]
+
+    public IActionResult AddUser(User user)
+    {
+        _userRepository.Insert(user);
+        return Created("/api/user/userSearch?id=" + user.Id, user);
     }
 }
