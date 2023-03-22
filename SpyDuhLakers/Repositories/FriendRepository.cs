@@ -82,7 +82,11 @@ namespace SpyDuhLakers.Repositories
                 {
                     cmd.CommandText = @"INSERT INTO Friends (userId, friendId) 
                                 OUTPUT INSERTED.Id 
-                                VALUES (@userId, @friendId)";
+                                VALUES (@userId, @friendId)" +
+
+                    @"INSERT INTO Friends (userId, friendId) 
+                                OUTPUT INSERTED.Id 
+                                VALUES (@friendId, @userId)";
                     cmd.Parameters.AddWithValue("@userId", friend.userId);
                     cmd.Parameters.AddWithValue("@friendId", friend.friendId);
                     int id = (int)cmd.ExecuteScalar();

@@ -6,7 +6,7 @@ using System.Collections.Generic;
 namespace SpyDuhLakers.Controllers
 {
     [ApiController]
-    [Route("api/friends")]
+    [Route("api/[controller]")]
     public class FriendController : ControllerBase
     {
         private readonly IFriendRepository _friendRepository;
