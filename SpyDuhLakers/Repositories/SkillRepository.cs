@@ -88,7 +88,7 @@ namespace SpyDuhLakers.Repositories
                     cmd.Parameters.AddWithValue("@name", skill.Name);
                     cmd.Parameters.AddWithValue("userId", skill.UserId);
 
-                    int id = (int)cmd.ExecuteScalar();
+                    skill.Id = (int)cmd.ExecuteScalar();
                     
                 }
                 conn.Close();
