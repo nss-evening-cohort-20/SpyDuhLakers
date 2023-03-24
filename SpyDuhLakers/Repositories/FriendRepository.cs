@@ -89,9 +89,7 @@ namespace SpyDuhLakers.Repositories
                                 VALUES (@friendId, @userId)";
                     cmd.Parameters.AddWithValue("@userId", friend.userId);
                     cmd.Parameters.AddWithValue("@friendId", friend.friendId);
-                    int id = (int)cmd.ExecuteScalar();
-
-                    id = friend.Id;
+                    friend.Id = (int)cmd.ExecuteScalar();
                 }
             }
         }
