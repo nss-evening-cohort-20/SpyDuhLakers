@@ -61,7 +61,8 @@ public class AgenciesController : ControllerBase
         {
             return NotFound();
         }
-        _agencyRepository.GetAgencyById(agency.Id);
+        _agencyRepository.Delete(agency.Id);
+
         return NoContent();
     }
 
