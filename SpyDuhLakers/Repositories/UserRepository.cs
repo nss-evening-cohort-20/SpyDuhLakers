@@ -22,6 +22,7 @@ namespace SpyDuhLakers.Repositories
                     SELECT
                         u.id AS SpyId,
                         u.name AS SpyName,
+                        u.agencyId AS AgencyId,
                         f.id AS FriendTableId,
                         f.friendId AS FriendUserId,
                         e.enemyId AS EnemyUserId,
@@ -55,6 +56,7 @@ namespace SpyDuhLakers.Repositories
                             {
                                 Id = DbUtils.GetInt(reader, "SpyId"),
                                 Name = DbUtils.GetString(reader, "SpyName"),
+                                AgencyId = DbUtils.GetInt(reader, "AgencyId"),
                                 Enemies = new List<Enemy>(),
                                 Friends = new List<Friend>(),
                                 Skills = new List<Skill>(),
@@ -147,6 +149,7 @@ namespace SpyDuhLakers.Repositories
                         SELECT
                         u.id AS SpyId,
                         u.name AS SpyName,
+                        u.agencyId AS AgencyId,
                         f.id AS FriendTableId,
                         f.friendId AS FriendUserId,
                         e.enemyId AS EnemyUserId,
@@ -178,6 +181,7 @@ namespace SpyDuhLakers.Repositories
                         {
                             Id = DbUtils.GetInt(reader, "SpyId"),
                             Name = DbUtils.GetString(reader, "SpyName"),
+                            AgencyId = DbUtils.GetInt(reader, "AgencyId"),
                             Enemies = new List<Enemy>(),
                             Friends = new List<Friend>(),
                             Skills = new List<Skill>(),
@@ -283,7 +287,8 @@ namespace SpyDuhLakers.Repositories
                 {
                     cmd.CommandText = @"Select u.id, 
 		                                u.[name] as 'Spy Name',
-		                                a.[name] as 'Agency Name'	
+		                                a.[name] as 'Agency Name',
+                                        u.agencyId as 'Agency Id'	
                                         From Users u
                                         join Agency A on u.id = a.id
                                         Where a.name = @name";
@@ -297,7 +302,8 @@ namespace SpyDuhLakers.Repositories
                         matchedUser = new User()
                         {
                             Id = DbUtils.GetInt(reader, "id"),
-                            Name = DbUtils.GetString(reader, "Agency Name")
+                            Name = DbUtils.GetString(reader, "Agency Name"),
+                            AgencyId = DbUtils.GetInt(reader, "Agency Id")
                         };
                         matchedAgency.Add(matchedUser);
                     }
@@ -318,6 +324,7 @@ namespace SpyDuhLakers.Repositories
                     cmd.CommandText = @"SELECT
                                             u.id AS SpyId,
                                             u.name AS SpyName,
+                                            u.agencyId AS AgencyId,
                                             f.id AS FriendTableId,
                                             f.friendId AS FriendUserId,
                                             e.enemyId AS EnemyUserId,
@@ -352,6 +359,7 @@ namespace SpyDuhLakers.Repositories
                             {
                                 Id = DbUtils.GetInt(reader, "SpyId"),
                                 Name = DbUtils.GetString(reader, "SpyName"),
+                                AgencyId = DbUtils.GetInt(reader, "AgencyId"),
                                 Enemies = new List<Enemy>(),
                                 Friends = new List<Friend>(),
                                 Skills = new List<Skill>(),
