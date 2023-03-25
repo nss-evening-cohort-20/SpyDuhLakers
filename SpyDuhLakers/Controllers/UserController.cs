@@ -53,4 +53,16 @@ public class UserController : ControllerBase
         _userRepository.Insert(user);
         return Created("/api/user/userSearch?id=" + user.Id, user);
     }
+
+    [HttpGet("agency/{agency}")]
+    public IActionResult GetUserByAgency(string agency)
+    {
+        List<User> SpyAgency = _userRepository.GetUserByAgency(agency);
+
+        if (SpyAgency == null)
+        {
+            return NotFound();
+        }
+        return Ok(SpyAgency);
+    }
 }
