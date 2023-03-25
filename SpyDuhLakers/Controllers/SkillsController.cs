@@ -16,22 +16,22 @@ public class SkillsController : ControllerBase
         _skillRepository = skillRepository;
     }
 
-    [HttpGet]
-    public IActionResult GetAllSkills()
-    {
-        return Ok(_skillRepository.GetAll());
-    }
+    //[HttpGet]
+    //public IActionResult GetAllSkills()
+    //{
+    //    return Ok(_skillRepository.GetAll());
+    //}
 
-    [HttpGet("{id}")]
-    public IActionResult GetById(int id)
-    {
-        var skill = _skillRepository.GetById(id);
-        if (skill == null)
-        {
-            return NotFound();
-        }
-        return Ok(skill);
-    }
+    //[HttpGet("{id}")]
+    //public IActionResult GetById(int id)
+    //{
+    //    var skill = _skillRepository.GetById(id);
+    //    if (skill == null)
+    //    {
+    //        return NotFound();
+    //    }
+    //    return Ok(skill);
+    //}
 
     [HttpPost]
     public IActionResult AddSkill(Skill skill)

@@ -7,13 +7,14 @@ namespace SpyDuhLakers.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-public class AgencyController : ControllerBase
+public class AgenciesController : ControllerBase
 {
     private readonly IAgencyRepository _agencyRepository;
 
-    public AgencyController(IAgencyRepository AgencyRepository)
+
+    public AgenciesController(IAgencyRepository agencyRepository)
     {
-        _agencyRepository = AgencyRepository;
+        _agencyRepository = agencyRepository;
     }
 
     [HttpGet]
@@ -21,49 +22,47 @@ public class AgencyController : ControllerBase
     {
         return Ok(_agencyRepository.GetAllAgencies());
     }
+
+    [HttpGet("{id}")]
+    public IActionResult GetAgencyById(int id)
+    {
+        var agency = _agencyRepository.GetAgencyById(id);
+        if (agency == null)
+        {
+            return NotFound();
+        }
+        return Ok(agency);
+    }
+
+    [HttpPost]
+    public IActionResult AddAgency(Agency agency)
+    {
+        _agencyRepository.Insert(agency);
+        return Created("/api/agency/" + agency.Id, agency);
+    }
+
+    [HttpPut("{id}")]
+    public IActionResult UpdateAgency(int id, Agency agency)
+    {
+        if (id != agency.Id)
+        {
+            return BadRequest();
+        }
+        _agencyRepository.Update(agency);
+        return NoContent();
+    }
+
+
+    [HttpDelete("{id}")]
+    public IActionResult DeleteAgency(int id)
+    {
+        var agency = _agencyRepository.GetAgencyById(id);
+        if (agency == null)
+        {
+            return NotFound();
+        }
+        _agencyRepository.GetAgencyById(agency.Id);
+        return NoContent();
+    }
+
 }
-
-//    [HttpGet("skill/{skill}")]
-//    public IActionResult GetSkill(string skill)
-//    {
-//        List<User> listOfSkills = _userRepository.GetUserBySkill(skill);
-
-//        if (listOfSkills == null)
-//        {
-//            return NotFound();
-//        }
-//        return Ok(listOfSkills);
-//    }
-
-//    [HttpGet("{id}")]
-
-//    public IActionResult GetUserById(int id)
-//    {
-//        var user = _userRepository.GetUserbyId(id);
-//        if (user == null)
-//        {
-//            return NotFound();
-//        }
-//        return Ok(user);
-//    }
-
-//    [HttpPost]
-
-//    public IActionResult AddUser(User user)
-//    {
-//        _userRepository.Insert(user);
-//        return Created("/api/user/userSearch?id=" + user.Id, user);
-//    }
-
-//    [HttpGet("agency/{agency}")]
-//    public IActionResult GetUserByAgency(string agency)
-//    {
-//        List<User> SpyAgency = _userRepository.GetUserByAgency(agency);
-
-//        if (SpyAgency == null)
-//        {
-//            return NotFound();
-//        }
-//        return Ok(SpyAgency);
-//    }
-//}

@@ -14,30 +14,61 @@ namespace SpyDuhLakers.Repositories
             {
                 conn.Open();
                 using (SqlCommand cmd = conn.CreateCommand())
-                    {
-                        cmd.CommandText = @"Select 
+                {
+                    cmd.CommandText = @"Select 
                                         id AS 'AgencyId'
                                         ,[name] AS 'AgencyName'
                                         From Agency";
                     SqlDataReader reader = cmd.ExecuteReader();
-                      List<Agency> agencies= new List<Agency>();
+                    List<Agency> agencies = new List<Agency>();
 
-                        while (reader.Read())
+                    while (reader.Read())
+                    {
+                        agencies.Add(new Agency()
                         {
-                            agencies.Add(new Agency()
-                            {
-                                Id = DbUtils.GetInt(reader, "AgencyId"),
-                                Name = DbUtils.GetString(reader, "AgencyName"),
-                            });
-                            }
-
-                        reader.Close();
-                        return agencies;
-                        }
+                            Id = DbUtils.GetInt(reader, "AgencyId"),
+                            Name = DbUtils.GetString(reader, "AgencyName"),
+                        });
                     }
-                }
-            
 
+                    reader.Close();
+                    return agencies;
+                }
+            }
+        }
+
+
+
+        public Agency GetAgencyById(int Id)
+        {
+            using (SqlConnection conn = Connection)
+            {
+                conn.Open();
+                using (SqlCommand cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = @"Select id
+                                        ,Name
+                                        From Agency
+                                        Where id = @id";
+                                            
+                    cmd.Parameters.AddWithValue("@id", Id);
+                    SqlDataReader reader = cmd.ExecuteReader();
+                    Agency agency = null;
+                    if (reader.Read())
+                    {
+                        agency = new Agency()
+                        {
+                            Id = Id,
+                            Name = reader.GetString(reader.GetOrdinal("Name")),
+
+
+                        };
+                    }
+                    reader.Close();
+                    return agency;
+                }
+            }
+        }
 
 
         public void Insert(Agency agency)
@@ -47,7 +78,8 @@ namespace SpyDuhLakers.Repositories
                 conn.Open();
                 using (SqlCommand cmd = conn.CreateCommand())
                 {
-                    cmd.CommandText = @"INSERT INTO Agency (Name}
+                    cmd.CommandText = @"INSERT INTO Agency 
+                                        ([Nam
                                         OUTPUT INSERTED.Id
                                         VALUES (@name)";
                     cmd.Parameters.AddWithValue(@"name", agency.Name);
@@ -67,6 +99,7 @@ namespace SpyDuhLakers.Repositories
                                     Name = @Name
                                 WHERE Id = @id";
                     cmd.Parameters.AddWithValue("@id", agency.Id);
+                    cmd.Parameters.AddWithValue("@Name", agency.Name);
                     cmd.ExecuteNonQuery();
                 }
                 conn.Close();
