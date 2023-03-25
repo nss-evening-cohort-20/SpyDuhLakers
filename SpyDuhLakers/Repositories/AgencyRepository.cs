@@ -132,7 +132,8 @@ namespace SpyDuhLakers.Repositories
                 {
                     cmd.CommandText = @"Select u.id, 
 		                                u.[name] as 'Spy Name',
-		                                a.[name] as 'Agency Name'	
+		                                a.[name] as 'Agency Name',
+                                        a.id as 'Agency Id'
                                         From Users u
                                         join Agency A on u.id = a.id
                                         Where a.name = @name";
@@ -146,7 +147,8 @@ namespace SpyDuhLakers.Repositories
                         matchedUser = new User()
                         {
                             Id = DbUtils.GetInt(reader, "id"),
-                            Name = DbUtils.GetString(reader, "name")
+                            Name = DbUtils.GetString(reader, "Spy Name"),
+                            AgencyId = DbUtils.GetInt(reader, "Agency Id")
                         };
                         matchedAgency.Add(matchedUser);
                     }

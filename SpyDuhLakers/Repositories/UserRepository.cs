@@ -303,7 +303,7 @@ namespace SpyDuhLakers.Repositories
                         matchedUser = new User()
                         {
                             Id = DbUtils.GetInt(reader, "id"),
-                            Name = DbUtils.GetString(reader, "Agency Name"),
+                            Name = DbUtils.GetString(reader, "Spy Name"),
                             AgencyId = DbUtils.GetInt(reader, "Agency Id")
                         };
                         matchedAgency.Add(matchedUser);
