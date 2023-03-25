@@ -13,6 +13,7 @@ builder.Services.AddTransient<IFriendRepository, FriendRepository>();
 builder.Services.AddTransient<ISkillRepository, SkillRepository>();
 builder.Services.AddTransient<IUserRepository, UserRepository>();
 builder.Services.AddTransient<IServiceRepository, ServiceRepository>();
+builder.Services.AddTransient<IAgencyRepository, AgencyRepository>();
 
 var app = builder.Build();
 

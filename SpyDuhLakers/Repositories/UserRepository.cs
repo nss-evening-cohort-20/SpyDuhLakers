@@ -58,7 +58,8 @@ namespace SpyDuhLakers.Repositories
                                 Enemies = new List<Enemy>(),
                                 Friends = new List<Friend>(),
                                 Skills = new List<Skill>(),
-                                Services = new List<Service>()
+                                Services = new List<Service>(),
+                                // Agency = new List<Agency>()
                             };
                             users.Add(user);
                         }
@@ -76,14 +77,14 @@ namespace SpyDuhLakers.Repositories
                                     userId = DbUtils.GetInt(reader, "SpyId"),
                                     enemyId = DbUtils.GetInt(reader, "EnemyUserId")
                                 });
-                            } 
+                            }
                         }
 
                         if (DbUtils.IsNotDbNull(reader, "FriendTableId"))
                         {
                             var friendTableId = DbUtils.GetInt(reader, "FriendTableId");
                             var existingFriend = user.Friends.FirstOrDefault(f => f.Id == friendTableId);
-                            
+
                             if (existingFriend == null)
                             {
                                 user.Friends.Add(new Friend()
@@ -99,7 +100,7 @@ namespace SpyDuhLakers.Repositories
                         {
                             var skillTableId = DbUtils.GetInt(reader, "SkillTableId");
                             var existingSkill = user.Skills.FirstOrDefault(s => s.Id == skillTableId);
-                            
+
                             if (existingSkill == null)
                             {
                                 user.Skills.Add(new Skill()
@@ -196,14 +197,14 @@ namespace SpyDuhLakers.Repositories
                                     userId = DbUtils.GetInt(reader, "SpyId"),
                                     enemyId = DbUtils.GetInt(reader, "EnemyUserId")
                                 });
-                            } 
+                            }
                         }
 
                         if (DbUtils.IsNotDbNull(reader, "FriendTableId"))
                         {
                             var friendTableId = DbUtils.GetInt(reader, "FriendTableId");
                             var existingFriend = user.Friends.FirstOrDefault(f => f.Id == friendTableId);
-                            
+
                             if (existingFriend == null)
                             {
                                 user.Friends.Add(new Friend()
@@ -219,7 +220,7 @@ namespace SpyDuhLakers.Repositories
                         {
                             var skillTableId = DbUtils.GetInt(reader, "SkillTableId");
                             var existingSkill = user.Skills.FirstOrDefault(s => s.Id == skillTableId);
-                            
+
                             if (existingSkill == null)
                             {
                                 user.Skills.Add(new Skill()
@@ -268,6 +269,41 @@ namespace SpyDuhLakers.Repositories
                                         VALUES (@name)";
                     cmd.Parameters.AddWithValue("@name", user.Name);
                     user.Id = (int)cmd.ExecuteScalar();
+                }
+            }
+        }
+
+
+        public List<User> GetUserByAgency(string agency)
+        {
+            using (SqlConnection conn = Connection)
+            {
+                conn.Open();
+                using (SqlCommand cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = @"Select u.id, 
+		                                u.[name] as 'Spy Name',
+		                                a.[name] as 'Agency Name'	
+                                        From Users u
+                                        join Agency A on u.id = a.id
+                                        Where a.name = @name";
+                    cmd.Parameters.AddWithValue("@name", agency);
+                    List<User> matchedAgency = new List<User>();
+                    SqlDataReader reader = cmd.ExecuteReader();
+                    User matchedUser = null;
+
+                    while (reader.Read())
+                    {
+                        matchedUser = new User()
+                        {
+                            Id = DbUtils.GetInt(reader, "id"),
+                            Name = DbUtils.GetString(reader, "Agency Name")
+                        };
+                        matchedAgency.Add(matchedUser);
+                    }
+
+                    reader.Close();
+                    return matchedAgency;
                 }
             }
         }
@@ -394,5 +430,7 @@ namespace SpyDuhLakers.Repositories
                 }
             }
         }
+
+
     }
 }
