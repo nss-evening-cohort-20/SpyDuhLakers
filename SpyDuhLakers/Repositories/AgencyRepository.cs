@@ -79,11 +79,11 @@ namespace SpyDuhLakers.Repositories
                 using (SqlCommand cmd = conn.CreateCommand())
                 {
                     cmd.CommandText = @"INSERT INTO Agency 
-                                        ([Nam
+                                        ([Name])
                                         OUTPUT INSERTED.Id
                                         VALUES (@name)";
                     cmd.Parameters.AddWithValue(@"name", agency.Name);
-                    int id = (int)cmd.ExecuteScalar();
+                    agency.Id = (int)cmd.ExecuteScalar();
                 }
             }
         }
