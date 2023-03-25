@@ -268,10 +268,11 @@ namespace SpyDuhLakers.Repositories
                 conn.Open();
                 using (SqlCommand cmd = conn.CreateCommand())
                 {
-                    cmd.CommandText = @"INSERT INTO Users ([Name])
+                    cmd.CommandText = @"INSERT INTO Users ([Name], agencyId)
                                         OUTPUT INSERTED.Id
-                                        VALUES (@name)";
+                                        VALUES (@name, @AgencyId)";
                     cmd.Parameters.AddWithValue("@name", user.Name);
+                    cmd.Parameters.AddWithValue("@AgencyId", user.AgencyId);
                     user.Id = (int)cmd.ExecuteScalar();
                 }
             }
